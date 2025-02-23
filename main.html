@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Image Compressor | Visual Optimizer Pro</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #64748b;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 2rem;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        /* File Upload Section */
+        .upload-container {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 6px 11px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .upload-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .custom-upload {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-upload:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Quality Slider */
+        .quality-control {
+            margin: 2rem 0;
+        }
+
+        .slider-container {
+            position: relative;
+            height: 40px;
+        }
+
+        .quality-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            outline: none;
+            margin-top: 1.5rem;
+        }
+
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 4px solid white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quality-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .quality-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: var(--secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-success.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Preview Cards */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .preview-card {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .preview-img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            background: #f1f5f9;
+            margin-top: 1rem;
+            padding: 0.5rem;
+        }
+
+        /* Stats */
+        .stats-container {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Loading Animation */
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        .header-parent {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .combine {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .leftad,
+        .rightad {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            width: 322px;
+            height: 500px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease;
+            overflow: hidden;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-parent">
+            <div class="leftad">
+                
+                
+            </div>
+            <div class="combine">
+                <header class="header">
+                    <h1>Image Quality Optimizer</h1>
+                    <p>Enhance your web performance with smart image compression</p>
+                </header>
+                <div class="upload-container">
+                    <label class="custom-upload">
+                        <input type="file" id="imageInput" accept="image/*" hidden>
+                        <div style="font-size: 3rem;">📁</div>
+                        <h3>Drag & Drop or Click to Upload</h3>
+                        <p>Supported formats: JPEG, PNG, WEBP</p>
+                    </label>
+                </div>
+            </div>
+            <div class="rightad">
+                
+            </div>
+        </div>
+
+        <main>
+
+
+            <div class="quality-control">
+                <div class="slider-container">
+                    <label>Compression Quality: <span id="qualityValue">80</span>%</label>
+                    <input type="range" class="quality-slider" min="1" max="100" value="80" id="qualitySlider">
+                    <div class="quality-labels">
+                        <span>Low</span>
+                        <span>High</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="compressImage()">
+                    ⚡ Compress Now
+                </button>
+                <button class="btn btn-success" id="downloadBtn">
+                    ↓ Download Image
+                </button>
+            </div>
+
+            <div class="preview-grid">
+                <div class="preview-card">
+                    <h3>Original Preview</h3>
+                    <img id="originalPreview" class="preview-img">
+                </div>
+                <div class="preview-card">
+                    <h3>Compressed Preview</h3>
+                    <img id="compressedPreview" class="preview-img">
+                </div>
+            </div>
+
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-item">
+                    <span>Original Size:</span>
+                    <span id="originalSize">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>Compressed Size:</span>
+                    <span id="compressedSize">-</span>
+                </div>
+                <div class="stat-item">
+                    <span>Reduction:</span>
+                    <span id="reductionPercent">-</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statsContainer = document.getElementById('statsContainer');
+
+        // Quality Slider Updates
+        qualitySlider.addEventListener('input', (e) => {
+            qualityValue.textContent = e.target.value;
+            updateSliderProgress(e.target.value);
+        });
+
+        function updateSliderProgress(value) {
+            const percent = (value / 100) * 100;
+            qualitySlider.style.background = `linear-gradient(to right, 
+                var(--primary) ${percent}%, 
+                #e2e8f0 ${percent}%)`;
+        }
+
+        // File Input Handling
+        imageInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('originalPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                statsContainer.style.display = 'none';
+                downloadBtn.classList.remove('show');
+            }
+        });
+
+        // Compression Function
+        async function compressImage() {
+            if (!imageInput.files[0]) {
+                showToast('Please select an image first!', 'error');
+                return;
+            }
+
+            try {
+                showLoading();
+                const file = imageInput.files[0];
+                const quality = qualitySlider.value / 100;
+
+                const img = await createImageBitmap(file);
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                canvas.toBlob((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById('compressedPreview').src = url;
+
+                    // Update download button
+                    downloadBtn.onclick = () => {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `compressed_${qualitySlider.value}%_${file.name}`;
+                        link.click();
+                    };
+                    downloadBtn.classList.add('show');
+
+                    // Update stats
+                    updateStats(file.size, blob.size);
+                    statsContainer.style.display = 'block';
+                    hideLoading();
+                }, 'image/webp', quality);
+
+            } catch (error) {
+                hideLoading();
+                showToast('Compression failed. Please try again.', 'error');
+            }
+        }
+
+        function updateStats(original, compressed) {
+            document.getElementById('originalSize').textContent = formatBytes(original);
+            document.getElementById('compressedSize').textContent = formatBytes(compressed);
+
+            const reduction = ((original - compressed) / original * 100).toFixed(1);
+            document.getElementById('reductionPercent').textContent = `${reduction}%`;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(1)} MB`;
+            if (bytes >= 1e3) return `${(bytes / 1e3).toFixed(1)} KB`;
+            return `${bytes} B`;
+        }
+
+        function showLoading() {
+            document.body.classList.add('loading');
+        }
+
+        function hideLoading() {
+            document.body.classList.remove('loading');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.style = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                background: ${type === 'error' ? '#ef4444' : '#10b981'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                animation: slideIn 0.3s ease;
+            `;
+
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize slider progress
+        updateSliderProgress(qualitySlider.value);
+    </script>
+</body>
+
+</html>
